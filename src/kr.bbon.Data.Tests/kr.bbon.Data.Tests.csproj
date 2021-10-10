@@ -19,4 +19,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Example\Example.csproj" />
+    <ProjectReference Include="..\kr.bbon.Data\kr.bbon.Data.csproj" />
+  </ItemGroup>
+
 </Project>
