@@ -1,10 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Options;
+using System;
 
 namespace kr.bbon.Data
 {
-    public abstract class EntityTypeConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : class, IEntity
+    public interface IEntityType
+    {
+        Type EntityType { get; }
+    }
+
+    public abstract class EntityTypeConfiguration<TEntity> : IEntityType, IEntityTypeConfiguration<TEntity> where TEntity : class, IEntity
     {
         public EntityTypeConfiguration(IOptionsMonitor<DatabaseOptions> databaseOptionsAccessor)
         {
@@ -40,5 +46,7 @@ namespace kr.bbon.Data
         public abstract void ConfigureEntity(EntityTypeBuilder<TEntity> builder);
 
         protected readonly DatabaseOptions databaseOptions;
+
+        public Type EntityType => typeof(TEntity);
     }
 }

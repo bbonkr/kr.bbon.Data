@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,8 +24,29 @@ namespace kr.bbon.Data
 
         private void ApplyConfigurationsFromSolution(ModelBuilder modelBuilder)
         {
-            var entityTypeConfigurations = AppDomain.CurrentDomain.GetAssemblies()
-              .Where(a => a.ExportedTypes.Any(t => t.BaseType != typeof(object) && typeof(IEntityTypeConfiguration<>).IsAssignableFrom(t)));
+            var entityTypeConfigurations = new List<Assembly>();
+            
+            var allAssembly = AppDomain.CurrentDomain.GetAssemblies();
+
+            foreach (var assembly in allAssembly)
+            {
+                if (assembly.IsDynamic)
+                {
+                    continue;
+                }
+
+                var foundTypes = assembly
+                    .GetExportedTypes()
+                    //.Where(t => t != typeof(EntityTypeConfiguration<>) && t != typeof(IEntityType) && typeof(IEntityType).IsAssignableFrom(t));
+                    .Where(t => t != typeof(EntityTypeConfiguration<>))
+                    .Where(t => t != typeof(IEntityType))
+                    .Where(t => typeof(IEntityType).IsAssignableFrom(t));
+
+                if (foundTypes.Count() > 0)
+                {
+                    entityTypeConfigurations.Add(assembly);
+                }
+            }
 
             foreach (var assembly in entityTypeConfigurations)
             {
