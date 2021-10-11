@@ -21,15 +21,17 @@ namespace Example
                     options.UseSoftDelete = true;
                 });
 
-                services.AddDbContext<TestDbContext>(options =>
+                services.AddGenericRepositories(ServiceLifetime.Scoped);
+                
+                services.AddAppDbContext<TestDbContext>(options =>
                 {
                     options.UseSqlite("data source=test.db"
-                    //    , sqliteOptions =>
-                    //{
-                    //    sqliteOptions.MigrationsAssembly(this.GetType().Name);
-                    //}
-                    );
-                }, ServiceLifetime.Singleton);
+                           //    , sqliteOptions =>
+                           //{
+                           //    sqliteOptions.MigrationsAssembly(this.GetType().Name);
+                           //}
+                           );
+                });
 
                 services.AddHostedService<DatabaseMigrationService>();
                 

@@ -24,31 +24,20 @@ namespace kr.bbon.Data
 
         private void ApplyConfigurationsFromSolution(ModelBuilder modelBuilder)
         {
-            var entityTypeConfigurations = new List<Assembly>();
-            
-            var allAssembly = AppDomain.CurrentDomain.GetAssemblies();
-
-            foreach (var assembly in allAssembly)
+            var assembliesIncludesEntityTypeConfigurationsPredicate = new Func<Type, bool>(t =>
             {
-                if (assembly.IsDynamic)
-                {
-                    continue;
-                }
+                if (!t.IsClass) { return false; }
+                if (t.IsInterface) { return false; }
+                if (t.IsAbstract) { return false; }
+                if (t == typeof(EntityTypeConfiguration<>)) { return false; }
+                if (t == typeof(IEntityType)) { return false; }
+                if (!typeof(IEntityType).IsAssignableFrom(t)) { return false; }
+                return true;
+            });
 
-                var foundTypes = assembly
-                    .GetExportedTypes()
-                    //.Where(t => t != typeof(EntityTypeConfiguration<>) && t != typeof(IEntityType) && typeof(IEntityType).IsAssignableFrom(t));
-                    .Where(t => t != typeof(EntityTypeConfiguration<>))
-                    .Where(t => t != typeof(IEntityType))
-                    .Where(t => typeof(IEntityType).IsAssignableFrom(t));
+            var assembliesIncludesEntityTypeConfigurations = ReflectionHelper.CollectAssemblty(t => t != typeof(EntityTypeConfiguration<>) && t != typeof(IEntityType) && typeof(IEntityType).IsAssignableFrom(t));
 
-                if (foundTypes.Count() > 0)
-                {
-                    entityTypeConfigurations.Add(assembly);
-                }
-            }
-
-            foreach (var assembly in entityTypeConfigurations)
+            foreach (var assembly in assembliesIncludesEntityTypeConfigurations)
             {
                 modelBuilder.ApplyConfigurationsFromAssembly(assembly);
             }
