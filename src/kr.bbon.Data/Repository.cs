@@ -51,18 +51,28 @@ namespace kr.bbon.Data
             throw new NotImplementedException();
         }
 
-        public virtual Task<IQueryable<TEntity>> GetListAsync(Func<TEntity, bool> predicate, CancellationToken cancellationToken = default)
+        public virtual IQueryable<TEntity> GetList(Func<TEntity, bool> predicate = null)
         {
-            var query = dbContext.Set<TEntity>().Where(predicate).AsQueryable();
+            IQueryable<TEntity> query = dbContext.Set<TEntity>();
 
-            return Task.FromResult(query);
+            if (predicate != null)
+            {
+                query = query.Where(predicate).AsQueryable();
+            }
+
+            return query;
         }
 
-        public virtual Task<IQueryable<TEntity>> GetListAsync(Func<TEntity, int, bool> predicate, CancellationToken cancellationToken = default)
+        public virtual IQueryable<TEntity> GetList(Func<TEntity, int, bool> predicate)
         {
-            var query = dbContext.Set<TEntity>().Where(predicate).AsQueryable();
+            IQueryable<TEntity> query = dbContext.Set<TEntity>();
 
-            return Task.FromResult(query);
+            if (predicate != null)
+            {
+                query = query.Where(predicate).AsQueryable();
+            }
+
+            return query;
         }
 
         public virtual Task<TEntity> UpdateAsync(TEntity entry)

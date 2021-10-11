@@ -13,9 +13,9 @@ namespace kr.bbon.Data
 
     public interface IRepository<TEntity> : IRepository where TEntity : class, IEntity
     {
-        Task<IQueryable<TEntity>> GetListAsync(Func<TEntity, bool> predicate, CancellationToken cancellationToken = default);
+        IQueryable<TEntity> GetList(Func<TEntity, bool> predicate = null);
 
-        Task<IQueryable<TEntity>> GetListAsync(Func<TEntity, int, bool> predicate, CancellationToken cancellationToken = default);
+        IQueryable<TEntity> GetList(Func<TEntity, int, bool> predicate);
 
         Task<TEntity> FindAsync(Func<TEntity, bool> predicate, CancellationToken cancellationToken = default);
         Task<TEntity> FindAsync(Func<TEntity, int, bool> predicate, CancellationToken cancellationToken = default);
