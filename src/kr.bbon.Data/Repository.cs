@@ -19,16 +19,14 @@ namespace kr.bbon.Data
             this.logger = logger;
         }
 
-        public async Task BeginTransaction(CancellationToken cancellationToken = default)
+        /// <summary>
+        /// See <see cref="AppDbContext.BeginTransactionAsync(CancellationToken)"/>.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
-            if (transactionCurrent != null)
-            {
-                throw new Exception("Multiple transaction does not support in current version.");
-            }
-
-            transactionCurrent = await dbContext.Database.BeginTransactionAsync(cancellationToken);
-
-            logger.LogInformation($"Transaction {transactionCurrent.TransactionId} was started");
+            await dbContext.BeginTransactionAsync(cancellationToken);
         }
 
         public virtual Task<TEntity> CreateAsync(TEntity entry)
@@ -51,18 +49,28 @@ namespace kr.bbon.Data
             throw new NotImplementedException();
         }
 
-        public virtual Task<IQueryable<TEntity>> GetListAsync(Func<TEntity, bool> predicate, CancellationToken cancellationToken = default)
+        public virtual IQueryable<TEntity> GetList(Func<TEntity, bool> predicate = null)
         {
-            var query = dbContext.Set<TEntity>().Where(predicate).AsQueryable();
+            IQueryable<TEntity> query = dbContext.Set<TEntity>();
 
-            return Task.FromResult(query);
+            if (predicate != null)
+            {
+                query = query.Where(predicate).AsQueryable();
+            }
+
+            return query;
         }
 
-        public virtual Task<IQueryable<TEntity>> GetListAsync(Func<TEntity, int, bool> predicate, CancellationToken cancellationToken = default)
+        public virtual IQueryable<TEntity> GetList(Func<TEntity, int, bool> predicate)
         {
-            var query = dbContext.Set<TEntity>().Where(predicate).AsQueryable();
+            IQueryable<TEntity> query = dbContext.Set<TEntity>();
 
-            return Task.FromResult(query);
+            if (predicate != null)
+            {
+                query = query.Where(predicate).AsQueryable();
+            }
+
+            return query;
         }
 
         public virtual Task<TEntity> UpdateAsync(TEntity entry)
@@ -70,15 +78,15 @@ namespace kr.bbon.Data
             throw new NotImplementedException();
         }
 
-        public async virtual Task<int> SaveAsync(bool autoCommit = true, CancellationToken cancellationToken = default)
+        public async virtual Task<int> SaveAsync(bool autoCommit = false, CancellationToken cancellationToken = default)
         {
             try
             {
                 var affected = await dbContext.SaveChangesAsync(cancellationToken);
                 
-                if (autoCommit && transactionCurrent != null)
+                if (autoCommit)
                 {
-                    await CommitAsync(cancellationToken);
+                    await dbContext.CommitTransactionAsync(cancellationToken);
                 }
 
                 return affected;
@@ -87,110 +95,33 @@ namespace kr.bbon.Data
             {
                 logger.LogError(ex, $"Error occurred when try to save on database.");
 
-                await RollbackAsync(cancellationToken);
+                await dbContext.RollbackTransactionAsync(cancellationToken);
 
                 throw;
             }
         }
 
-        public async Task CommitAsync(CancellationToken cancellationToken = default)
+        /// <summary>
+        /// See <see cref="AppDbContext.CommitTransactionAsync(CancellationToken)"/>
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task CommitAsync(CancellationToken cancellationToken = default)
         {
-            try
-            {
-                if (transactionCurrent != null)
-                {
-                    logger.LogInformation($"Transaction {transactionCurrent.TransactionId} was commited");
-
-                    await transactionCurrent.CommitAsync(cancellationToken);
-                }
-                else
-                {
-                    logger.LogInformation($"Transaction {transactionCurrent.TransactionId} did not find");
-                }
-            }
-            finally
-            {
-                await DisposeTrancationAsync();
-            }      
+            return dbContext.CommitTransactionAsync(cancellationToken);  
         }
 
-        public async Task RollbackAsync(CancellationToken cancellationToken = default)
+        /// <summary>
+        /// See <see cref="AppDbContext.RollbackTransactionAsync(CancellationToken)"/>
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task RollbackAsync(CancellationToken cancellationToken = default)
         {
-            try
-            {
-                if (transactionCurrent != null)
-                {
-                    await transactionCurrent.RollbackAsync(cancellationToken);
-
-                    logger.LogInformation($"Transaction {transactionCurrent.TransactionId} was rollbacked");
-                }
-                else
-                {
-                    logger.LogInformation($"Transaction {transactionCurrent.TransactionId} did not find");
-                }
-            }
-            finally
-            {
-                await DisposeTrancationAsync();
-            }
+            return dbContext.RollbackTransactionAsync(cancellationToken);
         }
-
-        private async Task DisposeTrancationAsync()
-        {
-            if (transactionCurrent != null)
-            {
-                var transactionId = transactionCurrent.TransactionId;
-                await transactionCurrent.DisposeAsync();
-                transactionCurrent = null;
-
-                logger.LogInformation($"Transaction {transactionId} was disposed.");
-            }
-        }
-
 
         private readonly AppDbContext dbContext;
-        private IDbContextTransaction transactionCurrent = null;
         private ILogger logger;
-
-        #region IDisposable implementation
-        private bool disposedValue;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects)
-
-                    if (transactionCurrent != null)
-                    {
-                        transactionCurrent.Dispose();
-                        transactionCurrent = null;
-                    }
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                disposedValue = true;
-            }
-        }
-
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~Repository()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
-
-
     }
 }

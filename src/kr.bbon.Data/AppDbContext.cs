@@ -1,6 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using kr.bbon.Core.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,10 +26,21 @@ namespace kr.bbon.Data
 
         private void ApplyConfigurationsFromSolution(ModelBuilder modelBuilder)
         {
-            var entityTypeConfigurations = AppDomain.CurrentDomain.GetAssemblies()
-              .Where(a => a.ExportedTypes.Any(t => t.BaseType != typeof(object) && typeof(IEntityTypeConfiguration<>).IsAssignableFrom(t)));
+            var assembliesIncludesEntityTypeConfigurationsPredicate = new Func<Type, bool>(t =>
+            {
+                if (!t.IsClass) { return false; }
+                if (t.IsInterface) { return false; }
+                if (t.IsAbstract) { return false; }
+                if (t == typeof(EntityTypeConfiguration<>)) { return false; }
+                if (t == typeof(IEntityType)) { return false; }
+                if (!typeof(IEntityType).IsAssignableFrom(t)) { return false; }
+                return true;
+            });
 
-            foreach (var assembly in entityTypeConfigurations)
+
+            var assembliesIncludesEntityTypeConfigurations = ReflectionHelper.CollectAssembly( t => t != typeof(EntityTypeConfiguration<>) && t != typeof(IEntityType) && typeof(IEntityType).IsAssignableFrom(t));
+
+            foreach (var assembly in assembliesIncludesEntityTypeConfigurations)
             {
                 modelBuilder.ApplyConfigurationsFromAssembly(assembly);
             }
@@ -55,7 +70,76 @@ namespace kr.bbon.Data
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
+        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            if (transaction != null)
+            {
+                throw new Exception($"Multiple transaction does not support in current version. (transaction id: {transaction.TransactionId})");
+            }
 
+            transaction = await Database.BeginTransactionAsync(cancellationToken);
+        }
+
+        public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (transaction != null)
+                {
+                    await transaction.CommitAsync(cancellationToken);
+                }
+            }
+            finally
+            {
+                await DisposeTransactionAsync();
+            }
+        }
+
+        public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (transaction != null)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                }
+            }
+            finally
+            {
+                await DisposeTransactionAsync();
+            }
+        }
+
+        private async Task DisposeTransactionAsync()
+        {
+            if (transaction != null)
+            {
+                await transaction.DisposeAsync();
+                transaction = null;
+            }
+        }
+
+        public override void Dispose()
+        {
+            if (transaction != null)
+            {
+                transaction.Dispose();
+                transaction = null;
+            }
+
+            base.Dispose();
+        }
+
+        public override ValueTask DisposeAsync()
+        {
+            if (transaction != null)
+            {
+                transaction.Dispose();
+                transaction = null;
+            }
+
+            return base.DisposeAsync();
+        }
 
         private void BeforeSaveChanges()
         {
@@ -84,5 +168,7 @@ namespace kr.bbon.Data
                 }                
             }
         }
+
+        private IDbContextTransaction transaction;
     }
 }
