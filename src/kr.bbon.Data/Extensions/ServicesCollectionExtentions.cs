@@ -1,4 +1,5 @@
-﻿using kr.bbon.Data;
+﻿using kr.bbon.Core.Reflection;
+using kr.bbon.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,39 +32,6 @@ namespace kr.bbon.Data
 
         public static IServiceCollection AddGenericRepositories(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped )
         {
-            //var allAssembly = AppDomain.CurrentDomain.GetAssemblies();
-
-            //foreach (var assembly in allAssembly)
-            //{
-            //    if (assembly.IsDynamic)
-            //    {
-            //        continue;
-            //    }
-
-            //    var foundTypes = assembly
-            //        .GetExportedTypes()
-            //        .Where(t => t != typeof(IRepository<>))
-            //        .Where(t => t != typeof(Repository<>))
-            //        .Where(t => t != typeof(IRepository))
-            //        .Where(t => typeof(IRepository).IsAssignableFrom(t));
-
-            //    foreach (var type in foundTypes)
-            //    {
-            //        switch (serviceLifetime)
-            //        {
-            //            case ServiceLifetime.Singleton:
-            //                services.AddSingleton(type);
-            //                break;
-            //            case ServiceLifetime.Transient:
-            //                services.AddTransient(type);
-            //                break;
-            //            default:
-            //                services.AddScoped(type);
-            //                break;
-            //        }                    
-            //    }
-            //}
-
             var predicate = new Func<Type, bool>(t =>
             {
                 if (!t.IsClass) { return false; }
@@ -76,7 +44,8 @@ namespace kr.bbon.Data
 
                 return true;
             });
-            var types = ReflectionHelper.CollectTypes(predicate);
+
+            var types = ReflectionHelper.CollectTypes( predicate);
 
             foreach (var type in types)
             {

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using kr.bbon.Core.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +37,8 @@ namespace kr.bbon.Data
                 return true;
             });
 
-            var assembliesIncludesEntityTypeConfigurations = ReflectionHelper.CollectAssemblty(t => t != typeof(EntityTypeConfiguration<>) && t != typeof(IEntityType) && typeof(IEntityType).IsAssignableFrom(t));
+
+            var assembliesIncludesEntityTypeConfigurations = ReflectionHelper.CollectAssembly( t => t != typeof(EntityTypeConfiguration<>) && t != typeof(IEntityType) && typeof(IEntityType).IsAssignableFrom(t));
 
             foreach (var assembly in assembliesIncludesEntityTypeConfigurations)
             {
@@ -67,7 +70,76 @@ namespace kr.bbon.Data
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
+        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            if (transaction != null)
+            {
+                throw new Exception($"Multiple transaction does not support in current version. (transaction id: {transaction.TransactionId})");
+            }
 
+            transaction = await Database.BeginTransactionAsync(cancellationToken);
+        }
+
+        public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (transaction != null)
+                {
+                    await transaction.CommitAsync(cancellationToken);
+                }
+            }
+            finally
+            {
+                await DisposeTransactionAsync();
+            }
+        }
+
+        public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (transaction != null)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                }
+            }
+            finally
+            {
+                await DisposeTransactionAsync();
+            }
+        }
+
+        private async Task DisposeTransactionAsync()
+        {
+            if (transaction != null)
+            {
+                await transaction.DisposeAsync();
+                transaction = null;
+            }
+        }
+
+        public override void Dispose()
+        {
+            if (transaction != null)
+            {
+                transaction.Dispose();
+                transaction = null;
+            }
+
+            base.Dispose();
+        }
+
+        public override ValueTask DisposeAsync()
+        {
+            if (transaction != null)
+            {
+                transaction.Dispose();
+                transaction = null;
+            }
+
+            return base.DisposeAsync();
+        }
 
         private void BeforeSaveChanges()
         {
@@ -96,5 +168,7 @@ namespace kr.bbon.Data
                 }                
             }
         }
+
+        private IDbContextTransaction transaction;
     }
 }

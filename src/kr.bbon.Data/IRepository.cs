@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace kr.bbon.Data
 {
-    public interface IRepository : IDisposable
+    public interface IRepository 
     {
 
     }
@@ -18,6 +18,7 @@ namespace kr.bbon.Data
         IQueryable<TEntity> GetList(Func<TEntity, int, bool> predicate);
 
         Task<TEntity> FindAsync(Func<TEntity, bool> predicate, CancellationToken cancellationToken = default);
+
         Task<TEntity> FindAsync(Func<TEntity, int, bool> predicate, CancellationToken cancellationToken = default);
 
         Task<TEntity> CreateAsync(TEntity entry);
@@ -26,8 +27,9 @@ namespace kr.bbon.Data
 
         Task<TEntity> DeleteAsync(TEntity entry);
 
-        Task BeginTransaction(CancellationToken cancellationToken = default);
         Task<int> SaveAsync(bool autoCommit = true, CancellationToken cancellationToken = default);
+
+        Task BeginTransactionAsync(CancellationToken cancellationToken = default);
 
         Task CommitAsync(CancellationToken cancellationToken = default);
 
