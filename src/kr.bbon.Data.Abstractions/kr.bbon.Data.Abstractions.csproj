@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;net5.0;net6.0</TargetFrameworks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="kr.bbon.Core" Version="1.4.1">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+</Project>

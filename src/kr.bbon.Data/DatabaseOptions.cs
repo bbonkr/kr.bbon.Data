@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace kr.bbon.Data
+﻿namespace kr.bbon.Data
 {
     public class DatabaseOptions
     {

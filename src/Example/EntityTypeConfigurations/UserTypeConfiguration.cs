@@ -15,11 +15,11 @@ namespace EntityTypeConfigurations
 
             public override void ConfigureEntity(EntityTypeBuilder<User> builder)
             {
-                builder.HasKey(x => x.Id);
+                //builder.HasKey(x => x.Id);
 
-                builder.Property(x => x.Id)
-                    .IsRequired()
-                    .ValueGeneratedOnAdd();
+                //builder.Property(x => x.Id)
+                //    .IsRequired()
+                //    .ValueGeneratedOnAdd();
 
                 builder.Property(x => x.UserName)
                     .IsRequired();

@@ -1,13 +1,17 @@
 ﻿using Example.Entities;
+
+using kr.bbon.Data;
+
 using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace kr.bbon.Data.Tests.Example
+namespace Example.DbContexts
 {
-    public class TestDbContext : AppDbContext
+    public class TestDbContext : AppDbContextBase
     {
         public TestDbContext(DbContextOptions<TestDbContext> dbContextOptions) : base(dbContextOptions)
         {

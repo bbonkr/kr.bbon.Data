@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kr.bbon.Data.Tests", "src\k
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "src\Example\Example.csproj", "{8A3B804B-D1BB-4CA6-84CE-988B79C3D534}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kr.bbon.Data.Abstractions", "src\kr.bbon.Data.Abstractions\kr.bbon.Data.Abstractions.csproj", "{38DDBBF0-4E59-4D37-B823-7E81253DCB87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{8A3B804B-D1BB-4CA6-84CE-988B79C3D534}.Release|x64.Build.0 = Release|Any CPU
 		{8A3B804B-D1BB-4CA6-84CE-988B79C3D534}.Release|x86.ActiveCfg = Release|Any CPU
 		{8A3B804B-D1BB-4CA6-84CE-988B79C3D534}.Release|x86.Build.0 = Release|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Debug|x64.Build.0 = Debug|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Debug|x86.Build.0 = Debug|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Release|x64.ActiveCfg = Release|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Release|x64.Build.0 = Release|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Release|x86.ActiveCfg = Release|Any CPU
+		{38DDBBF0-4E59-4D37-B823-7E81253DCB87}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,40 +1,40 @@
-﻿using kr.bbon.Data.Tests.Example;
+﻿using Example.Services;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Example
+namespace Example.HostedServices
 {
     public class DatabaseMigrationService : IHostedService
     {
         public DatabaseMigrationService(
-            TestDbContext dbContext, 
             IHostLifetime hostLifetime,
-            UserRepository userRepository
-            )
+            DataService dataService,
+            ILogger<DatabaseMigrationService> logger)
         {
-            this.dbContext = dbContext;
             this.hostLifetime = hostLifetime;
-            this.userRepository = userRepository;
+            this.dataService = dataService;
+            this.logger = logger;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             await hostLifetime.WaitForStartAsync(cancellationToken);
 
-            await dbContext.Database.MigrateAsync(cancellationToken);
+            await dataService.Context.Database.MigrateAsync(cancellationToken);
 
-            var users = await userRepository.GetList()
-                .Include(x => x.Blogs)
-                .Include(x => x.Posts)
-                .Select(x => new { x.UserName })
-                .OrderBy(x => x.UserName)
-                .ToListAsync(cancellationToken);
+            var getUserListSpecification = new GetUserListSpecification();
 
-            Console.WriteLine($"Users {users.Count}");
+            var users = await dataService.UserRepository
+                .GetAllAsync(getUserListSpecification);
+
+            logger.LogInformation("Users {count}", users.Count());
 
             await hostLifetime.StopAsync(cancellationToken);
         }
@@ -44,8 +44,9 @@ namespace Example
             return Task.CompletedTask;
         }
 
-        private readonly TestDbContext dbContext;
+
         private readonly IHostLifetime hostLifetime;
-        private readonly UserRepository userRepository;
-    }
+                private readonly DataService dataService;
+        private readonly ILogger logger;
+    }    
 }

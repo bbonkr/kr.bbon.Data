@@ -1,18 +1,18 @@
-﻿using kr.bbon.Core.Reflection;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using kr.bbon.Core.Reflection;
+using kr.bbon.Data.Abstractions.Entities;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+
 namespace kr.bbon.Data
 {
-    public abstract class AppDbContext : DbContext
+    public abstract class AppDbContextBase : DbContext
     {
-        public AppDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
+        public AppDbContextBase(DbContextOptions dbContextOptions) : base(dbContextOptions)
         {
 
         }
@@ -38,7 +38,7 @@ namespace kr.bbon.Data
             });
 
 
-            var assembliesIncludesEntityTypeConfigurations = ReflectionHelper.CollectAssembly( t => t != typeof(EntityTypeConfiguration<>) && t != typeof(IEntityType) && typeof(IEntityType).IsAssignableFrom(t));
+            var assembliesIncludesEntityTypeConfigurations = ReflectionHelper.CollectAssembly(t => t != typeof(EntityTypeConfiguration<>) && t != typeof(IEntityType) && typeof(IEntityType).IsAssignableFrom(t));
 
             foreach (var assembly in assembliesIncludesEntityTypeConfigurations)
             {
@@ -143,9 +143,9 @@ namespace kr.bbon.Data
 
         private void BeforeSaveChanges()
         {
-            foreach(var entry in ChangeTracker.Entries())
+            foreach (var entry in ChangeTracker.Entries())
             {
-                if (entry.Entity is Entity entryItem)
+                if (entry.Entity is EntitySupportSoftDeletionBase entryItem)
                 {
                     switch (entry.State)
                     {
@@ -165,7 +165,7 @@ namespace kr.bbon.Data
                         default:
                             break;
                     }
-                }                
+                }
             }
         }
 
