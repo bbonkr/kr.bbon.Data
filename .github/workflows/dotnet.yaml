@@ -22,7 +22,7 @@ jobs:
 #         run: dotnet test --no-build --verbosity normal
       # Publish
       - name: publish kr.bbon.Data
-        id: publish_nuget
+        id: publish_nuget_main
         uses: rohith/publish-nuget@v2
         with:
           # Filepath of the project to be packaged, relative to root of repository
@@ -56,7 +56,7 @@ jobs:
           # INCLUDE_SYMBOLS: false
 
       - name: publish kr.bbon.Data.Abstractions
-        id: publish_nuget
+        id: publish_nuget_abstractions
         uses: rohith/publish-nuget@v2
         with:
           # Filepath of the project to be packaged, relative to root of repository
