@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using kr.bbon.Data.Abstractions.Entities;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Options;
+
 using System;
 
 namespace kr.bbon.Data
@@ -19,9 +22,41 @@ namespace kr.bbon.Data
 
         public void Configure(EntityTypeBuilder<TEntity> builder)
         {
-            builder.Property(x => x.IsDeleted)
-                .IsRequired(databaseOptions.UseSoftDelete)
-                .HasValueGenerator<IsDeletedValueGenerator>();
+            if (typeof(IEntityHasIdentifier<>).IsAssignableFrom(EntityType))
+            {
+                // Hack
+                var identifierColumnName = nameof(IEntityHasIdentifier<string>.Id);
+                builder.HasKey(identifierColumnName);
+
+                var identifierPropertyBuilder = builder.Property(identifierColumnName)
+                    .IsRequired();
+
+                if (EntityType.GenericTypeArguments.Length > 1)
+                {
+                    var keyType = EntityType.GenericTypeArguments[1];
+
+                    identifierPropertyBuilder.HasConversion(keyType);
+                    identifierPropertyBuilder.ValueGeneratedOnAdd();
+                }
+            }
+
+            if (typeof(IEntitySupportSoftDeletion).IsAssignableFrom(EntityType))
+            {
+                builder.Property(nameof(IEntitySupportSoftDeletion.IsDeleted))
+                    .IsRequired(databaseOptions.UseSoftDelete)
+                    .HasDefaultValue(false)
+                    .HasValueGenerator<IsDeletedValueGenerator>();
+
+                builder.Property(nameof(IEntitySupportSoftDeletion.DeletedAt))
+                    .IsRequired(false)
+                    .HasValueGenerator<DateTimeOffsetValueGenerator>();
+
+
+                if (databaseOptions.UseSoftDelete)
+                {
+                    builder.HasQueryFilter(x => (x as IEntitySupportSoftDeletion).IsDeleted != true);
+                }
+            }
 
             builder.Property(x => x.CreatedAt)
                 .IsRequired()
@@ -30,15 +65,6 @@ namespace kr.bbon.Data
             builder.Property(x => x.UpdatedAt)
                 .IsRequired(false)
                 .HasValueGenerator<DateTimeOffsetValueGenerator>();
-
-            builder.Property(x => x.DeletedAt)
-                .IsRequired(false)
-                .HasValueGenerator<DateTimeOffsetValueGenerator>();
-
-            if (databaseOptions.UseSoftDelete)
-            {
-                builder.HasQueryFilter(x => !x.IsDeleted);
-            }
 
             ConfigureEntity(builder);
         }

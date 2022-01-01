@@ -1,4 +1,4 @@
-using kr.bbon.Data.Tests.Example;
+using Example;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

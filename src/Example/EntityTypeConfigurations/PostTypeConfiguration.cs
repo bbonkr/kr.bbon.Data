@@ -15,11 +15,11 @@ namespace Example.EntityTypeConfigurations
 
             public override void ConfigureEntity(EntityTypeBuilder<Post> builder)
             {
-                builder.HasKey(x => x.Id);
+                //builder.HasKey(x => x.Id);
 
-                builder.Property(x => x.Id)
-                    .IsRequired()
-                    .ValueGeneratedOnAdd();
+                //builder.Property(x => x.Id)
+                //    .IsRequired()
+                //    .ValueGeneratedOnAdd();
 
                 builder.Property(x => x.Title)
                     .IsRequired()

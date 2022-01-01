@@ -1,17 +1,114 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net5.0</TargetFrameworks>
+        <PackageId>kr.bbon.Data</PackageId>
+        <Title>kr.bbon.Data</Title>
+        <Version>1.0.0-alpha.1</Version>
+        <Authors>Pon Cheol Ku (bbon@live.com)</Authors>
+        <Company>bbon.kr</Company>
+        <Copyright>bbon.kr. All rights reserved.</Copyright>
+        <Description>kr.bbon.Data</Description>
+        <PackageTags>dotnet data repository ef entityframeworkcore entity bbonkr kr.bbon bbon bbon.kr</PackageTags>
+        <RepositoryUrl>https://github.com/bbonkr/kr.bbon.Data</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageReadmeFile>kr.bbon.Data.md</PackageReadmeFile>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="kr.bbon.Core" Version="1.2.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="../../assets/icon.png" Pack="true" PackagePath="/" />
+        <None Include="../../docs/kr.bbon.Data.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="kr.bbon.EntityFrameworkCore.Extensions" Version="1.3.0">
+            <IncludeAssets>all</IncludeAssets>
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+            <PrivateAssets>runtime; build; native; contentFiles; analyzers; buildtransitive</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\kr.bbon.Data.Abstractions\kr.bbon.Data.Abstractions.csproj" />
+    </ItemGroup>
 
 </Project>

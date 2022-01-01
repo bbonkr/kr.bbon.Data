@@ -1,11 +1,12 @@
-﻿using kr.bbon.Data;
+﻿using kr.bbon.Data.Abstractions.Entities;
+
 using System.Collections.Generic;
 
 namespace Example.Entities
 {
-    public class Blog : Entity
+    public class Blog : EntitySupportSoftDeletionBase<long>
     {
-        public long Id { get; set; }
+        //public long Id { get; set; }
 
         public string Title { get; set; }
 

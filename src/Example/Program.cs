@@ -1,10 +1,17 @@
-﻿using kr.bbon.Data;
-using kr.bbon.Data.Tests.Example;
+﻿
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
+
+using Example.DbContexts;
+using Example.HostedServices;
+using Example.Services;
+
+using kr.bbon.Data.Extensions.DependencyInjection;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Example
 {
@@ -16,26 +23,31 @@ namespace Example
             Host.CreateDefaultBuilder(args)
             .ConfigureServices(services =>
             {
-                services.Configure<DatabaseOptions>(options =>
+                var assembly = typeof(TestDbContext).Assembly;
+
+                services.AddDatabaseOptions(options =>
                 {
                     options.UseSoftDelete = true;
                 });
 
-                services.AddGenericRepositories(ServiceLifetime.Scoped);
-                
-                services.AddAppDbContext<TestDbContext>(options =>
+                services.AddLogging();
+
+                services.AddRepositories(new List<Assembly> { assembly }, ServiceLifetime.Scoped);
+                services.AddDataService<DataService>();
+
+                services.AddDbContext<TestDbContext>(options =>
                 {
-                    options.UseSqlite("data source=test.db"
-                           //    , sqliteOptions =>
-                           //{
-                           //    sqliteOptions.MigrationsAssembly(this.GetType().Name);
-                           //}
-                           );
+                    options.UseSqlite(
+                        "data source=test.db",
+                        sqliteOptions =>
+                        {
+                            sqliteOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                            sqliteOptions.MigrationsAssembly(assembly.FullName);
+                        });
                 });
 
                 services.AddHostedService<DatabaseMigrationService>();
-                
             });
-          
+
     }
 }

@@ -1,13 +1,11 @@
-﻿
-
-using kr.bbon.Data;
+﻿using kr.bbon.Data.Abstractions.Entities;
 
 namespace Example.Entities
 {
 
-    public class Post : Entity
+    public class Post : EntitySupportSoftDeletionBase<long>
     {
-        public long Id { get; set; }
+        //public long Id { get; set; }
 
         public string Title { get; set; }
 
