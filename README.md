@@ -6,3 +6,8 @@
 ## 제약사항
 
 엔티티 구성은 [Fluent API](https://docs.microsoft.com/ko-kr/ef/core/modeling/#use-fluent-api-to-configure-a-model) 를 사용합니다.
+
+
+
+* [kr.bbon.Data](docs/kr.bbon.Data.md)
+* [kr.bbon.Data.Abstractions](docs/kr.bbon.Data.Abstractions.md)
