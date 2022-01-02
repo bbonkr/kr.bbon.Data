@@ -46,7 +46,7 @@ namespace Example.HostedServices
 
 
         private readonly IHostLifetime hostLifetime;
-                private readonly DataService dataService;
+        private readonly DataService dataService;
         private readonly ILogger logger;
     }    
 }
