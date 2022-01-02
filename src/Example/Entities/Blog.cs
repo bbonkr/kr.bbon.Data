@@ -6,8 +6,6 @@ namespace Example.Entities
 {
     public class Blog : EntitySupportSoftDeletionBase<long>
     {
-        //public long Id { get; set; }
-
         public string Title { get; set; }
 
         public long OwnerId { get; set; }

@@ -2,24 +2,18 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Extensions.Options;
 
 using System;
 
 namespace kr.bbon.Data
 {
-    public interface IEntityType
+    public interface IHasEntityType
     {
         Type EntityType { get; }
     }
 
-    public abstract class EntityTypeConfiguration<TEntity> : IEntityType, IEntityTypeConfiguration<TEntity> where TEntity : class, IEntity
+    public abstract class EntityTypeConfigurationBase<TEntity> : IHasEntityType, IEntityTypeConfiguration<TEntity> where TEntity : class, IEntity
     {
-        public EntityTypeConfiguration(IOptionsMonitor<DatabaseOptions> databaseOptionsAccessor)
-        {
-            databaseOptions = databaseOptionsAccessor.CurrentValue ?? new DatabaseOptions();
-        }
-
         public void Configure(EntityTypeBuilder<TEntity> builder)
         {
             if (typeof(IEntityHasIdentifier<>).IsAssignableFrom(EntityType))
@@ -43,7 +37,7 @@ namespace kr.bbon.Data
             if (typeof(IEntitySupportSoftDeletion).IsAssignableFrom(EntityType))
             {
                 builder.Property(nameof(IEntitySupportSoftDeletion.IsDeleted))
-                    .IsRequired(databaseOptions.UseSoftDelete)
+                    .IsRequired(true)
                     .HasDefaultValue(false)
                     .HasValueGenerator<IsDeletedValueGenerator>();
 
@@ -51,11 +45,8 @@ namespace kr.bbon.Data
                     .IsRequired(false)
                     .HasValueGenerator<DateTimeOffsetValueGenerator>();
 
-
-                if (databaseOptions.UseSoftDelete)
-                {
-                    builder.HasQueryFilter(x => (x as IEntitySupportSoftDeletion).IsDeleted != true);
-                }
+                builder.HasQueryFilter(x => (x as IEntitySupportSoftDeletion).IsDeleted != true);
+                
             }
 
             builder.Property(x => x.CreatedAt)
@@ -70,8 +61,6 @@ namespace kr.bbon.Data
         }
 
         public abstract void ConfigureEntity(EntityTypeBuilder<TEntity> builder);
-
-        protected readonly DatabaseOptions databaseOptions;
 
         public Type EntityType => typeof(TEntity);
     }

@@ -5,8 +5,6 @@ namespace Example.Entities
 
     public class Post : EntitySupportSoftDeletionBase<long>
     {
-        //public long Id { get; set; }
-
         public string Title { get; set; }
 
         public string Content { get; set; }
