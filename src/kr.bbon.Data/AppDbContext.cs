@@ -4,12 +4,9 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-using kr.bbon.Core.Reflection;
 using kr.bbon.Data.Abstractions.Entities;
-using kr.bbon.Data.Extensions.DependencyInjection;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace kr.bbon.Data
 {
@@ -20,28 +17,10 @@ namespace kr.bbon.Data
 
         }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
-
-        //    ApplyConfigurationsFromSolution(modelBuilder);
-        //}
-
         protected virtual void ApplyConfigurationsFromAssemblies(ModelBuilder modelBuilder, IEnumerable<Assembly> assemblies = null)
         {
-            //var assembliesIncludesEntityTypeConfigurationsPredicate = new Func<Type, bool>(t =>
-            //{
-            //    if (!t.IsClass) { return false; }
-            //    if (t.IsInterface) { return false; }
-            //    if (t.IsAbstract) { return false; }
-            //    if (t == typeof(EntityTypeConfiguration<>)) { return false; }
-            //    if (t == typeof(IEntityType)) { return false; }
-            //    if (!typeof(IEntityType).IsAssignableFrom(t)) { return false; }
-            //    return true;
-            //});
-
-            //var assembliesIncludesEntityTypeConfigurations = ReflectionHelper.CollectAssembly(t => t != typeof(EntityTypeConfiguration<>) && t != typeof(IEntityType) && typeof(IEntityType).IsAssignableFrom(t));
             var assembliesIncludesEntityTypeConfigurationsPredicate = GetPrdicateForFliteringEntityTypeConfigurationInAssembly();
+
             foreach (var assembly in assemblies)
             {
                 modelBuilder.ApplyConfigurationsFromAssembly(assembly, assembliesIncludesEntityTypeConfigurationsPredicate);
@@ -57,7 +36,7 @@ namespace kr.bbon.Data
                 if (t.IsAbstract) { return false; }
                 if (t == typeof(EntityTypeConfigurationBase<>)) { return false; }
                 if (t == typeof(IHasEntityType)) { return false; }
-                
+
                 var result = false;
 
                 var baseType = t.DeclaringType?.BaseType ?? t.BaseType;
@@ -98,77 +77,6 @@ namespace kr.bbon.Data
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
-        public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
-        {
-            if (transaction != null)
-            {
-                throw new Exception($"Multiple transaction does not support in current version. (transaction id: {transaction.TransactionId})");
-            }
-
-            transaction = await Database.BeginTransactionAsync(cancellationToken);
-        }
-
-        public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                if (transaction != null)
-                {
-                    await transaction.CommitAsync(cancellationToken);
-                }
-            }
-            finally
-            {
-                await DisposeTransactionAsync();
-            }
-        }
-
-        public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                if (transaction != null)
-                {
-                    await transaction.RollbackAsync(cancellationToken);
-                }
-            }
-            finally
-            {
-                await DisposeTransactionAsync();
-            }
-        }
-
-        private async Task DisposeTransactionAsync()
-        {
-            if (transaction != null)
-            {
-                await transaction.DisposeAsync();
-                transaction = null;
-            }
-        }
-
-        public override void Dispose()
-        {
-            if (transaction != null)
-            {
-                transaction.Dispose();
-                transaction = null;
-            }
-
-            base.Dispose();
-        }
-
-        public override ValueTask DisposeAsync()
-        {
-            if (transaction != null)
-            {
-                transaction.Dispose();
-                transaction = null;
-            }
-
-            return base.DisposeAsync();
-        }
-
         protected virtual void BeforeSaveChanges()
         {
             foreach (var entry in ChangeTracker.Entries())
@@ -196,7 +104,5 @@ namespace kr.bbon.Data
                 }
             }
         }
-
-        private IDbContextTransaction transaction;
     }
 }
