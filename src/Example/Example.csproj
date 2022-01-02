@@ -17,7 +17,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\kr.bbon.Data\kr.bbon.Data.csproj" />
+        <ProjectReference Include="..\Example.Application\Example.Application.csproj" />
+        <ProjectReference Include="..\Example.Data\Example.Data.csproj" />
     </ItemGroup>
 
 </Project>

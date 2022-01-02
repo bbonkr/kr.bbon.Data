@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Example.DbContexts
+namespace Example.Data
 {
     public class TestDbContext : AppDbContextBase
     {
@@ -28,7 +28,6 @@ namespace Example.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
             ApplyConfigurationsFromAssemblies(modelBuilder, new List<Assembly> { GetType().Assembly });
         }
     }

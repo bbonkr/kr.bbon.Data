@@ -1,11 +1,11 @@
-﻿using Example.DbContexts;
+﻿using Example.Data;
 using Example.Entities;
 
 using kr.bbon.Data.Repositories;
 
 using Microsoft.Extensions.Logging;
 
-namespace Example.Repositories
+namespace Example.Data.Repositories
 {
     public class UserRepository : RepositoryBase<TestDbContext, User>
     {

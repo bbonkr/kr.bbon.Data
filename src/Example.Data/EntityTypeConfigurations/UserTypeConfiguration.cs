@@ -3,9 +3,8 @@
 using kr.bbon.Data;
 
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Extensions.Options;
 
-namespace EntityTypeConfigurations
+namespace Example.Data.EntityTypeConfigurations
 {
 
     public class UserTypeConfiguration : EntityTypeConfigurationBase<User>

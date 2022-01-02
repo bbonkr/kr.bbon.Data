@@ -1,9 +1,9 @@
-﻿using kr.bbon.Data.Abstractions.Entities;
+﻿using System;
+
+using kr.bbon.Data.Abstractions.Entities;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-using System;
 
 namespace kr.bbon.Data
 {
@@ -46,7 +46,7 @@ namespace kr.bbon.Data
                     .HasValueGenerator<DateTimeOffsetValueGenerator>();
 
                 builder.HasQueryFilter(x => (x as IEntitySupportSoftDeletion).IsDeleted != true);
-                
+
             }
 
             builder.Property(x => x.CreatedAt)

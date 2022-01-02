@@ -1,5 +1,6 @@
 ﻿
-using Example.DbContexts;
+
+using Example.Data;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
