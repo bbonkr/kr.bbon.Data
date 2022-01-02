@@ -10,9 +10,24 @@ namespace kr.bbon.Data.Extensions.DependencyInjection
 {
     public static class ServicesCollectionExtentions
     {
-        public static IServiceCollection AddDataService<TDataService>(this IServiceCollection services) where TDataService : class, IDataService
+        public static IServiceCollection AddDataService<TDataService, TDataServiceImpl>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+            where TDataService : IDataService
+            where TDataServiceImpl : class, IDataService
         {
-            services.AddScoped<TDataService>();
+            switch (serviceLifetime)
+            {
+                case ServiceLifetime.Singleton:
+                    //services.AddSingleton<TDataService, TDataServiceImpl>();
+                    services.AddSingleton(typeof(TDataService), typeof(TDataServiceImpl));
+                    break;
+                case ServiceLifetime.Transient:
+                    //services.AddTransient<TDataService, TDataServiceImpl>();
+                    services.AddTransient(typeof(TDataService), typeof(TDataServiceImpl));
+                    break;
+                default:
+                    services.AddScoped(typeof(TDataService), typeof(TDataServiceImpl));
+                    break;
+            }
 
             return services;
         }

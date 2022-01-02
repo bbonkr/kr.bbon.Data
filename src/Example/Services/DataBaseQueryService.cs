@@ -1,7 +1,4 @@
-﻿using Example.Services;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using System;
@@ -9,17 +6,17 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Example.HostedServices
+namespace Example.Application.Services
 {
-    public class DatabaseMigrationService : IHostedService
+    public class DataBaseQueryService : IHostedService
     {
-        public DatabaseMigrationService(
+        public DataBaseQueryService(
             IHostLifetime hostLifetime,
-            DataService dataService,
-            ILogger<DatabaseMigrationService> logger)
+            UserService userService,
+            ILogger<DataBaseQueryService> logger)
         {
             this.hostLifetime = hostLifetime;
-            this.dataService = dataService;
+            this.userService = userService;
             this.logger = logger;
         }
 
@@ -27,12 +24,7 @@ namespace Example.HostedServices
         {
             await hostLifetime.WaitForStartAsync(cancellationToken);
 
-            await dataService.Context.Database.MigrateAsync(cancellationToken);
-
-            var getUserListSpecification = new GetUserListSpecification();
-
-            var users = await dataService.UserRepository
-                .GetAllAsync(getUserListSpecification);
+            var users = await userService.GetAll();
 
             logger.LogInformation("Users {count}", users.Count());
 
@@ -46,7 +38,7 @@ namespace Example.HostedServices
 
 
         private readonly IHostLifetime hostLifetime;
-        private readonly DataService dataService;
+        private readonly UserService userService;
         private readonly ILogger logger;
     }    
 }

@@ -3,9 +3,9 @@
 using kr.bbon.Data;
 
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Extensions.Options;
 
-namespace Example.EntityTypeConfigurations
+
+namespace Example.Data.EntityTypeConfigurations
 {
     public class BlogTypeConfiguration : EntityTypeConfigurationBase<Blog>
     {

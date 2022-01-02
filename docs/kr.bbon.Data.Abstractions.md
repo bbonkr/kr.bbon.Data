@@ -7,6 +7,8 @@
 
 kr.bbon.Data 패키지의 기능의 추상화 계층을 제공합니다.
 
+데이터 저장을 [kr.bbon.Data](./kr.bbon.Data.md) 패키지를 사용해서 구현한 경우 응용프로그램 계층과 데이터 저장 계층의 의존을 제거하기 위해 사용됩니다.
+
 ## 🌈 Namespace
 
 ### kr.bbon.Data.Abstractions

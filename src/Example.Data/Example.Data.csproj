@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Example.Abstractions\Example.Abstractions.csproj" />
+    <ProjectReference Include="..\Example.Entities\Example.Entities.csproj" />
+    <ProjectReference Include="..\kr.bbon.Data\kr.bbon.Data.csproj" />
+  </ItemGroup>
+
+</Project>

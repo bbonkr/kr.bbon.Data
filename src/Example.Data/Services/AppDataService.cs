@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Example.DbContexts;
+using Example.Abstractions;
+using Example.Data;
 using Example.Entities;
 
 using kr.bbon.Data.Abstractions;
@@ -14,11 +15,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Example.Services
 {
-    public class DataService : DataServiceBase<TestDbContext>
+    public class AppDataService : DataServiceBase<TestDbContext>, IAppDataService
     {
-        public DataService(
+        public AppDataService(
             TestDbContext context,
-            ILogger<DataService> logger,
+            ILogger<AppDataService> logger,
             IRepository<User> userRepository,
             IRepository<Blog> blogRepository,
             IRepository<Post> postRepository)

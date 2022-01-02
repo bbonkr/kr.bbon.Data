@@ -2,7 +2,7 @@
 
 using kr.bbon.Data.Abstractions;
 
-namespace Example.HostedServices
+namespace Example.Application
 {
     public class GetUserListSpecification : SpecificationBase<User>
     {

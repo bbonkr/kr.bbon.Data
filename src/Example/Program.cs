@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-using Example.DbContexts;
-using Example.HostedServices;
+using Example.Abstractions;
+using Example.Application;
+using Example.Application.Services;
+using Example.Data;
 using Example.Services;
 
 using kr.bbon.Data.Extensions.DependencyInjection;
@@ -17,7 +19,19 @@ namespace Example
 {
     class Program
     {
-        static Task Main(string[] args) => CreateHostBuilder(args).Build().RunAsync();
+        static async Task Main(string[] args)
+        {
+            var app = CreateHostBuilder(args).Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<TestDbContext>();
+
+                await context.Database.MigrateAsync();
+            }
+
+            await app.RunAsync();
+        }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
@@ -28,7 +42,7 @@ namespace Example
                 services.AddLogging();
 
                 services.AddRepositories(new List<Assembly> { assembly }, ServiceLifetime.Scoped);
-                services.AddDataService<DataService>();
+                services.AddDataService<IAppDataService, AppDataService>();
 
                 services.AddDbContext<TestDbContext>(options =>
                 {
@@ -41,8 +55,8 @@ namespace Example
                         });
                 });
 
-                services.AddHostedService<DatabaseMigrationService>();
+                services.AddHostedService<DataBaseQueryService>();
+                services.AddScoped<UserService>();
             });
-
     }
 }
