@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
 using kr.bbon.Core.Reflection;
 using kr.bbon.Data.Abstractions.Entities;
+using kr.bbon.Data.Extensions.DependencyInjection;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -17,33 +20,58 @@ namespace kr.bbon.Data
 
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
 
-            ApplyConfigurationsFromSolution(modelBuilder);
+        //    ApplyConfigurationsFromSolution(modelBuilder);
+        //}
+
+        protected virtual void ApplyConfigurationsFromAssemblies(ModelBuilder modelBuilder, IEnumerable<Assembly> assemblies = null)
+        {
+            //var assembliesIncludesEntityTypeConfigurationsPredicate = new Func<Type, bool>(t =>
+            //{
+            //    if (!t.IsClass) { return false; }
+            //    if (t.IsInterface) { return false; }
+            //    if (t.IsAbstract) { return false; }
+            //    if (t == typeof(EntityTypeConfiguration<>)) { return false; }
+            //    if (t == typeof(IEntityType)) { return false; }
+            //    if (!typeof(IEntityType).IsAssignableFrom(t)) { return false; }
+            //    return true;
+            //});
+
+            //var assembliesIncludesEntityTypeConfigurations = ReflectionHelper.CollectAssembly(t => t != typeof(EntityTypeConfiguration<>) && t != typeof(IEntityType) && typeof(IEntityType).IsAssignableFrom(t));
+            var assembliesIncludesEntityTypeConfigurationsPredicate = GetPrdicateForFliteringEntityTypeConfigurationInAssembly();
+            foreach (var assembly in assemblies)
+            {
+                modelBuilder.ApplyConfigurationsFromAssembly(assembly, assembliesIncludesEntityTypeConfigurationsPredicate);
+            }
         }
 
-        private void ApplyConfigurationsFromSolution(ModelBuilder modelBuilder)
+        protected virtual Func<Type, bool> GetPrdicateForFliteringEntityTypeConfigurationInAssembly()
         {
-            var assembliesIncludesEntityTypeConfigurationsPredicate = new Func<Type, bool>(t =>
+            return new Func<Type, bool>(t =>
             {
-                if (!t.IsClass) { return false; }
                 if (t.IsInterface) { return false; }
+                if (!t.IsClass) { return false; }
                 if (t.IsAbstract) { return false; }
-                if (t == typeof(EntityTypeConfiguration<>)) { return false; }
-                if (t == typeof(IEntityType)) { return false; }
-                if (!typeof(IEntityType).IsAssignableFrom(t)) { return false; }
-                return true;
+                if (t == typeof(EntityTypeConfigurationBase<>)) { return false; }
+                if (t == typeof(IHasEntityType)) { return false; }
+                
+                var result = false;
+
+                var baseType = t.DeclaringType?.BaseType ?? t.BaseType;
+
+                if (baseType != null && baseType != typeof(Object))
+                {
+                    if (baseType.IsGenericType)
+                    {
+                        result = baseType.GetGenericTypeDefinition() == typeof(EntityTypeConfigurationBase<>);
+                    }
+                }
+
+                return result;
             });
-
-
-            var assembliesIncludesEntityTypeConfigurations = ReflectionHelper.CollectAssembly(t => t != typeof(EntityTypeConfiguration<>) && t != typeof(IEntityType) && typeof(IEntityType).IsAssignableFrom(t));
-
-            foreach (var assembly in assembliesIncludesEntityTypeConfigurations)
-            {
-                modelBuilder.ApplyConfigurationsFromAssembly(assembly);
-            }
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -55,7 +83,7 @@ namespace kr.bbon.Data
 
         public override int SaveChanges()
         {
-            return this.SaveChanges(true);
+            return SaveChanges(true);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -141,7 +169,7 @@ namespace kr.bbon.Data
             return base.DisposeAsync();
         }
 
-        private void BeforeSaveChanges()
+        protected virtual void BeforeSaveChanges()
         {
             foreach (var entry in ChangeTracker.Entries())
             {

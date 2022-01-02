@@ -25,11 +25,6 @@ namespace Example
             {
                 var assembly = typeof(TestDbContext).Assembly;
 
-                services.AddDatabaseOptions(options =>
-                {
-                    options.UseSoftDelete = true;
-                });
-
                 services.AddLogging();
 
                 services.AddRepositories(new List<Assembly> { assembly }, ServiceLifetime.Scoped);
