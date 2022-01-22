@@ -35,7 +35,7 @@ jobs:
         uses: bbonkr/git-tag-check-action@v1.0.5
         id: git_tag_check
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_TOKEN }}
           tag: 'v${{ steps.get_version.outputs.version }}'
 
       # Publish
