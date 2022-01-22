@@ -1,7 +1,7 @@
 # kr.bbon.Data.Abstractions Pacakge
 
 
-[![](https://img.shields.io/nuget/v/kr.bbon.Data.Abstractions)](https://www.nuget.org/packages/kr.bbon.Data.Abstractions) [![](https://img.shields.io/nuget/dt/kr.bbon.Data.Abstractions)](https://www.nuget.org/packages/kr.bbon.Data.Abstractions) [![publish to nuget](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/dotnet.yaml/badge.svg)](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/dotnet.yaml)
+[![](https://img.shields.io/nuget/v/kr.bbon.Data.Abstractions)](https://www.nuget.org/packages/kr.bbon.Data.Abstractions) [![](https://img.shields.io/nuget/dt/kr.bbon.Data.Abstractions)](https://www.nuget.org/packages/kr.bbon.Data.Abstractions) [![publish to nuget](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/build-tag.yaml/badge.svg)](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/build-tag.yaml)
 
 ## 📢 Overview
 

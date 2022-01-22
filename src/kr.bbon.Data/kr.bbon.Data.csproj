@@ -4,7 +4,7 @@
         <TargetFrameworks>net6.0;net5.0</TargetFrameworks>
         <PackageId>kr.bbon.Data</PackageId>
         <Title>kr.bbon.Data</Title>
-        <Version>1.0.0-alpha.5</Version>
+        <Version>1.0.0-alpha.7</Version>
         <Authors>Pon Cheol Ku (bbon@live.com)</Authors>
         <Company>bbon.kr</Company>
         <Copyright>bbon.kr. All rights reserved.</Copyright>
