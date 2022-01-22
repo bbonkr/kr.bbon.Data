@@ -20,13 +20,13 @@
 
 ### kr.bbon.Data Package
 
-[![](https://img.shields.io/nuget/v/kr.bbon.Data)](https://www.nuget.org/packages/kr.bbon.Data) [![](https://img.shields.io/nuget/dt/kr.bbon.Data)](https://www.nuget.org/packages/kr.bbon.Data) [![publish to nuget](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/dotnet.yaml/badge.svg)](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/dotnet.yaml)
+[![](https://img.shields.io/nuget/v/kr.bbon.Data)](https://www.nuget.org/packages/kr.bbon.Data) [![](https://img.shields.io/nuget/dt/kr.bbon.Data)](https://www.nuget.org/packages/kr.bbon.Data) [![publish to nuget](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/build-tag.yaml/badge.svg)](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/build-tag.yaml)
 
 [docs/kr.bbon.Data.md](docs/kr.bbon.Data.md) 에서 세부 내용을 확인하실 수 있습니다.
 
 ### kr.bbon.Data.Abstractions Package
 
 
-[![](https://img.shields.io/nuget/v/kr.bbon.Data.Abstractions)](https://www.nuget.org/packages/kr.bbon.Data.Abstractions) [![](https://img.shields.io/nuget/dt/kr.bbon.Data.Abstractions)](https://www.nuget.org/packages/kr.bbon.Data.Abstractions) [![publish to nuget](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/dotnet.yaml/badge.svg)](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/dotnet.yaml)
+[![](https://img.shields.io/nuget/v/kr.bbon.Data.Abstractions)](https://www.nuget.org/packages/kr.bbon.Data.Abstractions) [![](https://img.shields.io/nuget/dt/kr.bbon.Data.Abstractions)](https://www.nuget.org/packages/kr.bbon.Data.Abstractions) [![publish to nuget](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/build-tag.yaml/badge.svg)](https://github.com/bbonkr/kr.bbon.Data/actions/workflows/build-tag.yaml)
 
 [docs/kr.bbon.Data.Abstractions.md](docs/kr.bbon.Data.Abstractions.md) 에서 세부 내용을 확인하실 수 있습니다.
