@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq.Expressions;
 using System;
+using kr.bbon.Data.Abstractions;
 
 namespace kr.bbon.Data.Abstractions
 {
+
     public abstract class SpecificationBase<TEntity> : ISpecification<TEntity> where TEntity : class
     {
         public SpecificationBase() { }
@@ -93,13 +95,13 @@ namespace kr.bbon.Data.Abstractions
         private bool isNoTracking = false;
     }
 
-    public abstract class SpecifcationBase<TEntity, TResult> : SpecificationBase<TEntity>, ISpecification<TEntity, TResult>
+    public abstract class SpecificationBase<TEntity, TResult> : SpecificationBase<TEntity>, ISpecification<TEntity, TResult>
         where TEntity : class
         where TResult : class
     {
-        public SpecifcationBase() : base() { }
+        public SpecificationBase() : base() { }
 
-        public SpecifcationBase(Expression<Func<TEntity, bool>> criteria) : base(criteria) { }
+        public SpecificationBase(Expression<Func<TEntity, bool>> criteria) : base(criteria) { }
 
         public Expression<Func<TEntity, int, TResult>> Project { get; private set; }
 
