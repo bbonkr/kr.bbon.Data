@@ -79,6 +79,8 @@ namespace kr.bbon.Data
 
         protected virtual void BeforeSaveChanges()
         {
+            var entities = ChangeTracker.Entries();
+
             foreach (var entry in ChangeTracker.Entries())
             {
                 if (entry.Entity is EntitySupportSoftDeletionBase entryItem)

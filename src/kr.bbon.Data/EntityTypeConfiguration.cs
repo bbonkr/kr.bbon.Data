@@ -16,21 +16,39 @@ namespace kr.bbon.Data
     {
         public void Configure(EntityTypeBuilder<TEntity> builder)
         {
-            if (typeof(IEntityHasIdentifier<>).IsAssignableFrom(EntityType))
+            //if (typeof(IEntityHasIdentifier<>).IsAssignableFrom(EntityType))
+            if (IsAssignableToGenericType(EntityType, typeof(IEntityHasIdentifier<>)))
             {
                 // Hack
-                var identifierColumnName = nameof(IEntityHasIdentifier<string>.Id);
+                var identifierColumnName = nameof(IEntityHasIdentifier<long>.Id);
                 builder.HasKey(identifierColumnName);
 
                 var identifierPropertyBuilder = builder.Property(identifierColumnName)
                     .IsRequired();
 
-                if (EntityType.GenericTypeArguments.Length > 1)
+                if (EntityType.GenericTypeArguments.Length > 1 || (EntityType.BaseType != null && EntityType.BaseType.GenericTypeArguments.Length > 1))
                 {
-                    var keyType = EntityType.GenericTypeArguments[1];
+                    // has key conversion type
+                    var keyConversionType = EntityType.GenericTypeArguments.Length > 1 ?
+                        EntityType.GenericTypeArguments[1] :
+                        (EntityType.BaseType != null && EntityType.BaseType.GenericTypeArguments.Length > 1) ?
+                        EntityType.BaseType.GenericTypeArguments[1] :
+                        null;
 
-                    identifierPropertyBuilder.HasConversion(keyType);
-                    identifierPropertyBuilder.ValueGeneratedOnAdd();
+                    if (keyConversionType != null)
+                    {
+                        identifierPropertyBuilder.HasConversion(keyConversionType);
+                    }
+                }
+
+                var defaultInstance = Activator.CreateInstance(EntityType);
+                if (defaultInstance is IEntityHasIdentifier hasIdentifierEntity)
+                {
+                    if (hasIdentifierEntity.IsKeyValueGeneratedOnAdd())
+                    {
+                        // key value generated on add
+                        identifierPropertyBuilder.ValueGeneratedOnAdd();
+                    }
                 }
             }
 
@@ -39,6 +57,7 @@ namespace kr.bbon.Data
                 builder.Property(nameof(IEntitySupportSoftDeletion.IsDeleted))
                     .IsRequired(true)
                     .HasDefaultValue(false)
+                    .HasConversion<bool>()
                     .HasValueGenerator<IsDeletedValueGenerator>();
 
                 builder.Property(nameof(IEntitySupportSoftDeletion.DeletedAt))
@@ -46,7 +65,6 @@ namespace kr.bbon.Data
                     .HasValueGenerator<DateTimeOffsetValueGenerator>();
 
                 builder.HasQueryFilter(x => (x as IEntitySupportSoftDeletion).IsDeleted != true);
-
             }
 
             builder.Property(x => x.CreatedAt)
@@ -61,6 +79,25 @@ namespace kr.bbon.Data
         }
 
         public abstract void ConfigureEntity(EntityTypeBuilder<TEntity> builder);
+
+        private bool IsAssignableToGenericType(Type givenType, Type genericType)
+        {
+            var interfaceTypes = givenType.GetInterfaces();
+
+            foreach (var it in interfaceTypes)
+            {
+                if (it.IsGenericType && it.GetGenericTypeDefinition() == genericType)
+                    return true;
+            }
+
+            if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
+                return true;
+
+            Type baseType = givenType.BaseType;
+            if (baseType == null) return false;
+
+            return IsAssignableToGenericType(baseType, genericType);
+        }
 
         public Type EntityType => typeof(TEntity);
     }
