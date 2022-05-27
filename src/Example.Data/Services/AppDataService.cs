@@ -30,7 +30,7 @@ namespace Example.Services
             PostRepository = postRepository;
         }
 
-        public IRepository<User> UserRepository { get;  init; }
+        public IRepository<User> UserRepository { get; init; }
 
         public IRepository<Blog> BlogRepository { get; init; }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Example.Entities;
 
 using kr.bbon.Data.Abstractions;
-
+using kr.bbon.Data.Abstractions.Specifications;
 using Moq;
 
 namespace Example.Application.Tests.Mocks

@@ -16,7 +16,7 @@ namespace Example.Data.EntityTypeConfigurations
                 .HasMaxLength(1000);
 
             builder.Property(x => x.Content)
-                .IsRequired();                
+                .IsRequired();
 
             builder.Property(x => x.AuthorId)
                 .IsRequired();
@@ -24,13 +24,13 @@ namespace Example.Data.EntityTypeConfigurations
             builder.Property(x => x.BlogId)
                 .IsRequired();
 
-            builder.HasOne(x => x.Author)
-                .WithMany(x => x.Posts)
-                .HasForeignKey(x => x.AuthorId);
+            //builder.HasOne(x => x.Author)
+            //    .WithMany(x => x.Posts)
+            //    .HasForeignKey(x => x.AuthorId);
 
-            builder.HasOne(x => x.Blog)
-                .WithMany(x => x.Posts)
-                .HasForeignKey(x => x.BlogId);
+            //builder.HasOne(x => x.Blog)
+            //    .WithMany(x => x.Posts)
+            //    .HasForeignKey(x => x.BlogId);
         }
     }
 

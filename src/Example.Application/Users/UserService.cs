@@ -1,6 +1,6 @@
 ﻿using Example.Abstractions;
 using Example.Entities;
-
+using kr.bbon.Data.Abstractions.Specifications;
 using Microsoft.Extensions.Logging;
 
 using System;
@@ -22,7 +22,14 @@ namespace Example.Application
 
         public async Task<IEnumerable<User>> GetAll()
         {
-            var getUserListSpecification = new GetUserListSpecification();
+            // var getUserListSpecification = new GetUserListSpecification();
+
+            var getUserListSpecification = new SpecificationBuilder<User>()
+            .AddInclude(x => x.Blogs)
+            .AddInclude(x => x.Posts)
+            .AddOrderBy(x => x.UserName, true)
+            // .AddProject(x => x)
+            .Build();
 
             var users = await dataService.UserRepository
               .GetAllAsync(getUserListSpecification);
@@ -33,5 +40,5 @@ namespace Example.Application
 
         private readonly IAppDataService dataService;
         private readonly ILogger logger;
-    }    
+    }
 }

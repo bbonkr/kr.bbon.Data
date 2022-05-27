@@ -16,7 +16,7 @@ namespace Example
             var dbContextOptionsBuilder = new DbContextOptionsBuilder<TestDbContext>();
             dbContextOptionsBuilder.UseSqlite(connectionString, sqlServerOptions =>
             {
-                sqlServerOptions.MigrationsAssembly(typeof(TestDbContext).Assembly.FullName);
+                sqlServerOptions.MigrationsAssembly(typeof(Example.Data.Sqlite.PlaceHolder).Assembly.FullName);
             });
 
             var dbContextOptions = dbContextOptionsBuilder.Options;

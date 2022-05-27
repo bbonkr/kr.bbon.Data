@@ -1,6 +1,6 @@
 ﻿using Example.Entities;
 
-using kr.bbon.Data.Abstractions;
+using kr.bbon.Data.Abstractions.Specifications;
 
 namespace Example.Application
 {
@@ -10,7 +10,7 @@ namespace Example.Application
         {
             AddInclude(x => x.Blogs);
             AddInclude(x => x.Posts);
-            AddSort(x => x.UserName, SortOrder.Ascending);
+            AddSort(nameof(User.UserName), true);
         }
     }
 }
