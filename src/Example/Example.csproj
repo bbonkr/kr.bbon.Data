@@ -7,18 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="kr.bbon.Core" Version="1.4.1" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
+      <PackageReference Include="kr.bbon.Core" Version="1.4.6" />
+      <PackageReference Include="kr.bbon.EntityFrameworkCore.Extensions" Version="1.4.5" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.5">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.1" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Example.Application\Example.Application.csproj" />
-        <ProjectReference Include="..\Example.Data\Example.Data.csproj" />
+        <ProjectReference Include="..\Example.Data.Sqlite\Example.Data.Sqlite.csproj" />
     </ItemGroup>
 
 </Project>

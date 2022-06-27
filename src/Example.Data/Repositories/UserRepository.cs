@@ -12,5 +12,7 @@ namespace Example.Data.Repositories
         public UserRepository(TestDbContext context, ILogger<UserRepository> logger) : base(context, logger)
         {
         }
+
+        public TestDbContext DbContext { get => Context; }
     }
 }

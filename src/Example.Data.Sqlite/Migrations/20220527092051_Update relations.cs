@@ -2,9 +2,9 @@
 
 #nullable disable
 
-namespace Example.Migrations
+namespace Example.Data.Sqlite.Migrations
 {
-    public partial class Updateentities : Migration
+    public partial class Updaterelations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -7,14 +7,14 @@ namespace kr.bbon.Data.Abstractions.Entities
     /// </summary>
     public abstract class EntitySupportSoftDeletionBase : EntityBase, IEntitySupportSoftDeletion
     {
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public DateTimeOffset? DeletedAt { get; set; }
     }
 
     public abstract class EntitySupportSoftDeletionBase<TKey> : EntityBase<TKey>, IEntitySupportSoftDeletion
     {
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public DateTimeOffset? DeletedAt { get; set; }
     }
@@ -22,5 +22,6 @@ namespace kr.bbon.Data.Abstractions.Entities
     public abstract class EntitySupportSoftDeletionBase<TKey, TKeyConversion> : EntitySupportSoftDeletionBase<TKey>, IEntityHasIdentifier<TKey, TKeyConversion>
     {
         public Type ConversionType { get => typeof(TKeyConversion); }
+
     }
 }

@@ -7,6 +7,7 @@ using Example.Abstractions;
 using Example.Application;
 using Example.Application.Services;
 using Example.Data;
+using Example.Data.Seeders;
 using Example.Services;
 
 using kr.bbon.Data.Extensions.DependencyInjection;
@@ -23,12 +24,22 @@ namespace Example
         {
             var app = CreateHostBuilder(args).Build();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<TestDbContext>();
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var context = scope.ServiceProvider.GetRequiredService<TestDbContext>();
+            //    var userSeeder = scope.ServiceProvider.GetRequiredService<UserSeeder>();
 
-                await context.Database.MigrateAsync();
-            }
+            //    await context.Database.MigrateAsync();
+
+            //    await userSeeder.SeedAsync();
+            //}
+
+            var context = app.Services.GetRequiredService<TestDbContext>();
+            var userSeeder = app.Services.GetRequiredService<TestDataSeeder>();
+
+            await context.Database.MigrateAsync();
+
+            await userSeeder.SeedAsync();
 
             await app.RunAsync();
         }
@@ -41,8 +52,8 @@ namespace Example
 
                 services.AddLogging();
 
-                services.AddRepositories(new List<Assembly> { assembly }, ServiceLifetime.Scoped);
-                services.AddDataService<IAppDataService, AppDataService>();
+                services.AddRepositories(new List<Assembly> { assembly }, ServiceLifetime.Singleton);
+                services.AddDataService<IAppDataService, AppDataService>(ServiceLifetime.Singleton);
 
                 services.AddDbContext<TestDbContext>(options =>
                 {
@@ -51,12 +62,14 @@ namespace Example
                         sqliteOptions =>
                         {
                             sqliteOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-                            sqliteOptions.MigrationsAssembly(assembly.FullName);
+                            sqliteOptions.MigrationsAssembly(typeof(Example.Data.Sqlite.PlaceHolder).Assembly.FullName);
                         });
-                });
+                }, ServiceLifetime.Singleton);
+
+                services.AddSingleton<UserService>();
+                services.AddSingleton<TestDataSeeder>();
 
                 services.AddHostedService<DataBaseQueryService>();
-                services.AddScoped<UserService>();
             });
     }
 }
